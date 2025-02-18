@@ -1,0 +1,81 @@
+import random
+import tkinter as tk
+from tkinter import messagebox
+
+class CelularApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Simulador de Celular")
+        self.ligado = False
+        
+        self.frame = tk.Frame(self.root, bg="black", width=300, height=500)
+        self.frame.pack_propagate(False)
+        self.frame.pack()
+        
+        self.label_tela = tk.Label(self.frame, text="Celular Desligado", fg="white", bg="black", font=("Arial", 14))
+        self.label_tela.pack(pady=20)
+        
+        self.btn_ligar = tk.Button(self.frame, text="Ligar", command=self.ligar, bg="green", fg="white")
+        self.btn_ligar.pack(pady=10)
+        
+    def ligar(self):
+        self.ligado = True
+        self.label_tela.config(text="Celular Ligado\nEscolha uma opção no menu")
+        self.btn_ligar.destroy()
+        self.menu()
+    
+    def menu(self):
+        self.btn_jogo = tk.Button(self.frame, text="Abrir Jogo dos Planetas", command=self.abrir_jogo, bg="blue", fg="white")
+        self.btn_jogo.pack(pady=10)
+        
+        self.btn_info = tk.Button(self.frame, text="Exibir Informações", command=self.exibir_info, bg="gray", fg="white")
+        self.btn_info.pack(pady=10)
+        
+        self.btn_desligar = tk.Button(self.frame, text="Desligar", command=self.desligar, bg="red", fg="white")
+        self.btn_desligar.pack(pady=10)
+    
+    def abrir_jogo(self):
+        if self.ligado:
+            jogo()
+        else:
+            messagebox.showwarning("Atenção", "O celular está desligado!")
+    
+    def exibir_info(self):
+        messagebox.showinfo("Informações", "Marca: Samsung\nModelo: Galaxy S21\nSistema Operacional: Android")
+    
+    def desligar(self):
+        self.ligado = False
+        self.frame.destroy()
+        self.__init__(self.root)
+
+def obter_dicas():
+    return {
+        "Mercúrio": ["Sou o menor planeta do Sistema Solar.", "Sou o mais próximo do Sol.", "Não tenho luas."],
+        "Vênus": ["Sou o planeta mais quente do Sistema Solar.", "Meu dia é maior que meu ano.", "Sou chamado de estrela d'alva."],
+        "Terra": ["Sou o único planeta conhecido por abrigar vida.", "Tenho um satélite natural chamado Lua.", "Sou o terceiro planeta do Sistema Solar."],
+        "Marte": ["Sou chamado de planeta vermelho.", "Tenho as maiores tempestades de poeira do Sistema Solar.", "Possuo o Monte Olimpo, o maior vulcão do Sistema Solar."],
+        "Júpiter": ["Sou o maior planeta do Sistema Solar.", "Tenho a Grande Mancha Vermelha, uma enorme tempestade.", "Tenho 79 luas conhecidas."]
+    }
+
+def jogo():
+    dicas_dict = obter_dicas()
+    planetas = list(dicas_dict.keys())
+    if not planetas:
+        messagebox.showerror("Erro", "Nenhum planeta disponível no jogo.")
+        return
+    
+    planeta_escolhido = random.choice(planetas)
+    dicas = dicas_dict[planeta_escolhido]
+    
+    for i, dica in enumerate(dicas):
+        resposta = simpledialog.askstring("Jogo dos Planetas", f"Dica {i + 1}: {dica}\nQual é o planeta?")
+        if resposta and resposta.capitalize() == planeta_escolhido:
+            messagebox.showinfo("Resultado", "Parabéns! Você acertou!")
+            return
+    
+    messagebox.showinfo("Resultado", f"Que pena! O planeta era {planeta_escolhido}.")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = CelularApp(root)
+    root.mainloop()
